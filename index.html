@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Grupos Pequeños - 4to Trimestre</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f8fafc; }
+        .gradient-header { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); }
+        .card-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01); }
+        .tab-btn.active { border-bottom: 3px solid #2563eb; color: #2563eb; font-weight: 600; }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased pb-24">
+
+    <!-- ENCABEZADO Y PERFIL DEL LÍDER -->
+    <header class="gradient-header text-white pt-8 pb-12 px-4 shadow-xl relative">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            
+            <div class="text-center md:text-left">
+                <span class="bg-blue-200/20 text-blue-100 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
+                    4to Trimestre • Grupos Pequeños
+                </span>
+                <h1 class="text-3xl md:text-4xl font-extrabold mt-2 tracking-tight">Para que vayáis y llevéis mucho fruto</h1>
+                <p class="text-blue-100 mt-1 text-sm">Planificador de Temas & Centro de Control de Liderazgo</p>
+            </div>
+
+            <!-- Tarjeta de Perfil del Líder -->
+            <div class="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl flex items-center gap-4 text-left w-full md:w-auto min-w-[280px]">
+                <img id="profile-img" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-14 h-14 rounded-full object-cover border-2 border-white/60 bg-white shadow-sm">
+                <div class="flex-1">
+                    <h4 id="profile-name" class="font-bold text-base leading-tight">Mtro. Juan Salvador</h4>
+                    <p id="profile-gp" class="text-xs text-blue-200 mt-0.5">Líder de GP • "Luz del Mundo"</p>
+                    <p id="profile-partner" class="text-xs text-blue-100 italic mt-0.5"><i class="fa-solid fa-user-group text-[10px] mr-1"></i>Pareja: Francisca</p>
+                </div>
+                <button onclick="openConfigModal()" class="bg-white/20 hover:bg-white/30 text-white p-2 rounded-xl transition" title="Configurar Perfil">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- PANEL PRINCIPAL CON NAVEGACIÓN -->
+    <main class="max-w-6xl mx-auto px-4 -mt-6">
+
+        <div class="bg-white rounded-2xl p-3 md:p-4 card-shadow border border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+            
+            <!-- Pestañas de Filtrado -->
+            <div class="flex space-x-1 md:space-x-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+                <button onclick="setTab('futuros')" id="tab-futuros" class="tab-btn active px-4 py-2 text-xs md:text-sm font-semibold transition whitespace-nowrap">
+                    <i class="fa-regular fa-calendar-check mr-1.5 text-blue-600"></i> Próximos (1-13)
+                </button>
+                <button onclick="setTab('pasados')" id="tab-pasados" class="tab-btn px-4 py-2 text-xs md:text-sm font-semibold text-slate-500 hover:text-slate-700 transition whitespace-nowrap">
+                    <i class="fa-solid fa-clock-rotate-left mr-1.5 text-slate-400"></i> Pasados
+                </button>
+                <button onclick="setTab('todos')" id="tab-todos" class="tab-btn px-4 py-2 text-xs md:text-sm font-semibold text-slate-500 hover:text-slate-700 transition whitespace-nowrap">
+                    <i class="fa-solid fa-list-ol mr-1.5 text-slate-400"></i> Ver Todos
+                </button>
+            </div>
+
+            <!-- Búsqueda y Selector de Vista -->
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <div class="relative w-full md:w-60">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="searchInput" onkeyup="filterThemes()" placeholder="Buscar tema, texto..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div class="flex border rounded-xl overflow-hidden bg-slate-50 p-0.5">
+                    <button onclick="switchView('cards')" id="btn-view-cards" class="p-1.5 px-3 bg-white text-blue-600 rounded-lg shadow-sm text-xs font-semibold">
+                        <i class="fa-solid fa-grid-2"></i>
+                    </button>
+                    <button onclick="switchView('table')" id="btn-view-table" class="p-1.5 px-3 text-slate-500 rounded-lg text-xs font-semibold">
+                        <i class="fa-solid fa-table"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="loading" class="text-center py-20">
+            <i class="fa-solid fa-spinner fa-spin text-4xl text-blue-600 mb-3"></i>
+            <p class="text-slate-500 text-sm font-medium">Sincronizando con Google Sheets...</p>
+        </div>
+
+        <!-- VISTA DE TARJETAS -->
+        <div id="view-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+
+        <!-- VISTA DE TABLA -->
+        <div id="view-table" class="hidden bg-white rounded-2xl card-shadow overflow-hidden border border-slate-100">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs md:text-sm">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-500 uppercase text-[11px] border-b border-slate-200">
+                            <th class="py-3.5 px-4 font-semibold">Semana</th>
+                            <th class="py-3.5 px-4 font-semibold">Sábado / Fecha</th>
+                            <th class="py-3.5 px-4 font-semibold">Logo</th>
+                            <th class="py-3.5 px-4 font-semibold">Título del Tema</th>
+                            <th class="py-3.5 px-4 font-semibold">Texto Clave</th>
+                            <th class="py-3.5 px-4 text-center font-semibold">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL DETALLE COMPLETO -->
+    <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] overflow-y-auto card-shadow relative p-6 md:p-8">
+            <button onclick="closeModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full w-10 h-10 flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIGURACIÓN PERFIL -->
+    <div id="configModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full card-shadow p-6 relative">
+            <button onclick="closeConfigModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-user-gear text-blue-600"></i> Perfil del Líder
+            </h3>
+
+            <div class="space-y-4 text-xs md:text-sm">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Nombre del Líder</label>
+                    <input type="text" id="cfg-name" class="w-full p-2.5 bg-slate-50 border rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Nombre del Grupo Pequeño</label>
+                    <input type="text" id="cfg-gp" class="w-full p-2.5 bg-slate-50 border rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Pareja Misionera / Partner</label>
+                    <input type="text" id="cfg-partner" class="w-full p-2.5 bg-slate-50 border rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">URL Fotografía de Perfil</label>
+                    <input type="text" id="cfg-img" class="w-full p-2.5 bg-slate-50 border rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://...">
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-2">
+                <button onclick="closeConfigModal()" class="px-4 py-2 text-slate-500 font-semibold text-xs rounded-xl hover:bg-slate-100">Cancelar</button>
+                <button onclick="saveProfile()" class="px-5 py-2 bg-blue-600 text-white font-semibold text-xs rounded-xl hover:bg-blue-700 shadow-sm">Guardar Perfil</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxlEEKSz3EVQKlSVDbNyZzp3mRBcIUa3ZlL_1IZae991nIwMmqDRHgxbbm-6lT_85kjhg/exec";
+
+        let allData = [];
+        let currentTab = 'futuros';
+        let currentView = 'cards';
+
+        function loadProfile() {
+            const profile = JSON.parse(localStorage.getItem('gp_profile')) || {
+                name: "Mtro. Juan Salvador",
+                gp: "Luz del Mundo",
+                partner: "Francisca",
+                img: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+            };
+            document.getElementById('profile-name').innerText = profile.name;
+            document.getElementById('profile-gp').innerText = `Líder de GP • "${profile.gp}"`;
+            document.getElementById('profile-partner').innerHTML = `<i class="fa-solid fa-user-group text-[10px] mr-1"></i>Pareja: ${profile.partner}`;
+            document.getElementById('profile-img').src = profile.img;
+
+            document.getElementById('cfg-name').value = profile.name;
+            document.getElementById('cfg-gp').value = profile.gp;
+            document.getElementById('cfg-partner').value = profile.partner;
+            document.getElementById('cfg-img').value = profile.img;
+        }
+
+        function saveProfile() {
+            const newProfile = {
+                name: document.getElementById('cfg-name').value,
+                gp: document.getElementById('cfg-gp').value,
+                partner: document.getElementById('cfg-partner').value,
+                img: document.getElementById('cfg-img').value || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+            };
+            localStorage.setItem('gp_profile', JSON.stringify(newProfile));
+            loadProfile();
+            closeConfigModal();
+        }
+
+        function openConfigModal() { document.getElementById('configModal').classList.remove('hidden'); }
+        function closeConfigModal() { document.getElementById('configModal').classList.add('hidden'); }
+
+        // Carga dinamarica JSONP para evitar bloqueos de CORS
+        function fetchData() {
+            window.handleSheetData = function(data) {
+                if (Array.isArray(data) && data.length > 0) {
+                    allData = data;
+                    document.getElementById('loading').classList.add('hidden');
+                    renderContent();
+                } else {
+                    document.getElementById('loading').innerHTML = `
+                        <p class="text-amber-600 font-semibold text-sm">No se encontraron filas en la hoja de cálculo.</p>
+                    `;
+                }
+            };
+
+            const script = document.createElement('script');
+            script.src = `${APPS_SCRIPT_URL}?callback=handleSheetData`;
+            script.onerror = function() {
+                document.getElementById('loading').innerHTML = `
+                    <p class="text-red-500 font-semibold text-sm">Error al conectar con Google Sheets. Verifica que el despliegue esté publicado en 'Cualquiera'.</p>
+                `;
+            };
+            document.body.appendChild(script);
+        }
+
+        function getVal(item, keys, defaultVal = '') {
+            for (let k of keys) {
+                if (item[k] !== undefined && item[k] !== null && item[k] !== '') {
+                    return item[k];
+                }
+            }
+            return defaultVal;
+        }
+
+        // Formato exacto de fecha: dddd, dd de mmm, aaaa
+        function formatDateDisplay(rawDate) {
+            if (!rawDate) return "Sábado";
+            if (rawDate.includes("T")) rawDate = rawDate.split("T")[0];
+            const parts = rawDate.split("-");
+            if (parts.length === 3) {
+                const year = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1;
+                const day = parseInt(parts[2], 10);
+                const dateObj = new Date(year, month, day);
+
+                const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+                const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+
+                const diaSemana = dias[dateObj.getDay()];
+                const diaNum = String(day).padStart(2, '0');
+                const mesNombre = meses[month];
+
+                return `${diaSemana}, ${diaNum} de ${mesNombre}, ${year}`;
+            }
+            return rawDate;
+        }
+
+        function isPastDate(rawDate) {
+            if (!rawDate) return false;
+            if (rawDate.includes("T")) rawDate = rawDate.split("T")[0];
+            const todayStr = new Date().toISOString().split('T')[0];
+            return rawDate < todayStr;
+        }
+
+        function getFilteredData() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            return allData.filter(item => {
+                const fecha = getVal(item, ['fecha']);
+                const isPast = isPastDate(fecha);
+
+                if (currentTab === 'futuros' && isPast) return false;
+                if (currentTab === 'pasados' && !isPast) return false;
+
+                if (query) {
+                    return JSON.stringify(item).toLowerCase().includes(query);
+                }
+                return true;
+            });
+        }
+
+        function renderContent() {
+            const filtered = getFilteredData();
+            if (currentView === 'cards') {
+                renderCards(filtered);
+            } else {
+                renderTable(filtered);
+            }
+        }
+
+        function renderCards(data) {
+            const container = document.getElementById('view-cards');
+            if (data.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-sm font-medium">No hay temas en esta categoría.</div>`;
+                return;
+            }
+
+            container.innerHTML = data.map((item, idx) => {
+                const realIdx = allData.indexOf(item);
+                const semana = getVal(item, ['semana', 'numero_de_semana'], idx + 1);
+                const fechaDisp = formatDateDisplay(getVal(item, ['fecha']));
+                const isPast = isPastDate(getVal(item, ['fecha']));
+                const logo = getVal(item, ['logo', 'logo_url'], 'https://cdn-icons-png.flaticon.com/512/2907/2907150.png');
+                const titulo = getVal(item, ['titulo']);
+                const textoClave = getVal(item, ['texto_clave', 'textoclave']);
+
+                return `
+                <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-100 flex flex-col justify-between hover:border-blue-300 transition relative overflow-hidden">
+                    ${isPast ? '<span class="absolute top-0 right-0 bg-slate-100 text-slate-500 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-l border-b uppercase">Pasado</span>' : ''}
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="bg-blue-100 text-blue-700 font-bold text-xs px-2.5 py-1 rounded-full">
+                                Semana ${semana} de 13
+                            </span>
+                            <span class="text-xs text-slate-400 font-medium ${isPast ? 'mr-12' : ''}"><i class="fa-regular fa-calendar mr-1"></i> ${fechaDisp}</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 mb-3">
+                            <img src="${logo}" class="w-12 h-12 rounded-xl object-cover border bg-slate-50 p-1 flex-shrink-0">
+                            <h3 class="font-bold text-slate-800 text-base leading-snug">${titulo}</h3>
+                        </div>
+
+                        <p class="text-xs text-slate-600 italic bg-slate-50 p-3 rounded-xl mb-4 border-l-2 border-blue-500 line-clamp-3">
+                            "${textoClave}"
+                        </p>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-100 flex justify-between items-center gap-2">
+                        <button onclick="openModal(${realIdx})" class="text-xs text-blue-600 hover:text-blue-800 font-bold flex items-center">
+                            <i class="fa-solid fa-book-open mr-1.5"></i> Ver Lección Completa
+                        </button>
+                        <button onclick="shareWhatsAppSection(${realIdx}, 'todo')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs px-3 py-1.5 rounded-xl flex items-center gap-1 font-medium shadow-sm transition">
+                            <i class="fa-brands fa-whatsapp text-sm"></i> Compartir
+                        </button>
+                    </div>
+                </div>
+            `;}).join('');
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">No hay registros disponibles.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map((item, idx) => {
+                const realIdx = allData.indexOf(item);
+                const semana = getVal(item, ['semana', 'numero_de_semana'], idx + 1);
+                const fechaDisp = formatDateDisplay(getVal(item, ['fecha']));
+                const logo = getVal(item, ['logo', 'logo_url'], 'https://cdn-icons-png.flaticon.com/512/2907/2907150.png');
+                const titulo = getVal(item, ['titulo']);
+                const textoClave = getVal(item, ['texto_clave', 'textoclave']);
+
+                return `
+                <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 font-bold text-blue-600">Sem. ${semana}</td>
+                    <td class="py-3 px-4 whitespace-nowrap text-slate-500">${fechaDisp}</td>
+                    <td class="py-3 px-4">
+                        <img src="${logo}" class="w-8 h-8 rounded-lg object-cover border">
+                    </td>
+                    <td class="py-3 px-4 font-semibold text-slate-800">${titulo}</td>
+                    <td class="py-3 px-4 text-slate-500 text-xs max-w-xs truncate">${textoClave}</td>
+                    <td class="py-3 px-4 text-center whitespace-nowrap">
+                        <button onclick="openModal(${realIdx})" class="text-blue-600 hover:bg-blue-50 p-1.5 rounded-lg mr-1" title="Ver Lección">
+                            <i class="fa-solid fa-expand"></i>
+                        </button>
+                        <button onclick="shareWhatsAppSection(${realIdx}, 'todo')" class="text-emerald-500 hover:bg-emerald-50 p-1.5 rounded-lg" title="Compartir Tema">
+                            <i class="fa-brands fa-whatsapp text-base"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;}).join('');
+        }
+
+        function openModal(idx) {
+            const item = allData[idx];
+            if (!item) return;
+
+            const semana = getVal(item, ['semana'], idx + 1);
+            const fechaDisp = formatDateDisplay(getVal(item, ['fecha']));
+            const logo = getVal(item, ['logo'], 'https://cdn-icons-png.flaticon.com/512/2907/2907150.png');
+            const titulo = getVal(item, ['titulo']);
+            const textoClave = getVal(item, ['texto_clave', 'textoclave']);
+            const hielo = getVal(item, ['para_romper_el_hielo', 'romperhielo', 'romper_el_hielo', 'para_romper_hielo', 'romper', 'hielo']);
+            const estudiemos = getVal(item, ['estudiemos', 'introduccion']);
+            const conversemos = getVal(item, ['conversemos']);
+            const reflexionemos = getVal(item, ['reflexionemos']);
+            const practiquemos = getVal(item, ['practiquemos']);
+
+            document.getElementById('modalContent').innerHTML = `
+                <div class="flex items-center gap-4 mb-6 pb-4 border-b">
+                    <img src="${logo}" class="w-16 h-16 rounded-2xl object-cover border p-1 bg-slate-50 flex-shrink-0">
+                    <div>
+                        <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">Semana ${semana} de 13 • ${fechaDisp}</span>
+                        <h2 class="text-2xl font-extrabold text-slate-800 mt-1">${titulo}</h2>
+                    </div>
+                </div>
+
+                <div class="space-y-5 text-sm text-slate-700">
+                    
+                    <div class="bg-amber-50/80 border border-amber-200 p-4 rounded-2xl">
+                        <div class="flex justify-between items-center mb-1">
+                            <strong class="text-amber-900 font-bold flex items-center gap-2"><i class="fa-solid fa-book-open text-amber-600"></i> Texto Clave</strong>
+                            <button onclick="shareWhatsAppSection(${idx}, 'texto')" class="text-xs bg-amber-200 hover:bg-amber-300 text-amber-900 font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1">
+                                <i class="fa-brands fa-whatsapp"></i> Compartir
+                            </button>
+                        </div>
+                        <p class="italic text-amber-900/90">${textoClave}</p>
+                    </div>
+
+                    ${hielo ? `
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl">
+                        <div class="flex justify-between items-center mb-1">
+                            <strong class="text-slate-800 font-bold flex items-center gap-2"><i class="fa-solid fa-comments text-blue-500"></i> 1. Para Romper el Hielo</strong>
+                            <button onclick="shareWhatsAppSection(${idx}, 'hielo')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1">
+                                <i class="fa-brands fa-whatsapp"></i> Compartir
+                            </button>
+                        </div>
+                        <p class="whitespace-pre-line text-slate-600">${hielo}</p>
+                    </div>` : ''}
+
+                    ${estudiemos ? `
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl">
+                        <div class="flex justify-between items-center mb-1">
+                            <strong class="text-slate-800 font-bold flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-indigo-500"></i> 2. Estudiemos (Desarrollo)</strong>
+                            <button onclick="shareWhatsAppSection(${idx}, 'estudiemos')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1">
+                                <i class="fa-brands fa-whatsapp"></i> Compartir
+                            </button>
+                        </div>
+                        <p class="whitespace-pre-line text-slate-600">${estudiemos}</p>
+                    </div>` : ''}
+
+                    ${conversemos || reflexionemos ? `
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl">
+                        <div class="flex justify-between items-center mb-1">
+                            <strong class="text-slate-800 font-bold flex items-center gap-2"><i class="fa-solid fa-users text-teal-500"></i> 3. Conversemos & Reflexionemos</strong>
+                            <button onclick="shareWhatsAppSection(${idx}, 'conversemos')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1">
+                                <i class="fa-brands fa-whatsapp"></i> Compartir
+                            </button>
+                        </div>
+                        ${conversemos ? `<p class="whitespace-pre-line text-slate-600 mb-3">${conversemos}</p>` : ''}
+                        ${reflexionemos ? `<p class="whitespace-pre-line text-slate-600 italic bg-white p-3 rounded-xl border border-slate-100">${reflexionemos}</p>` : ''}
+                    </div>` : ''}
+
+                    ${practiquemos ? `
+                    <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl">
+                        <div class="flex justify-between items-center mb-1">
+                            <strong class="text-emerald-900 font-bold flex items-center gap-2"><i class="fa-solid fa-bullseye text-emerald-600"></i> 4. Practiquemos (Desafío Semanal)</strong>
+                            <button onclick="shareWhatsAppSection(${idx}, 'practiquemos')" class="text-xs bg-emerald-200 hover:bg-emerald-300 text-emerald-900 font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1">
+                                <i class="fa-brands fa-whatsapp"></i> Compartir
+                            </button>
+                        </div>
+                        <p class="whitespace-pre-line text-emerald-950">${practiquemos}</p>
+                    </div>` : ''}
+
+                </div>
+
+                <div class="mt-8 pt-4 border-t flex justify-end gap-3">
+                    <button onclick="closeModal()" class="px-4 py-2 text-slate-500 font-semibold text-xs rounded-xl hover:bg-slate-100">Cerrar</button>
+                    <button onclick="shareWhatsAppSection(${idx}, 'todo')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 shadow-md transition">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Compartir Tema Completo por WhatsApp
+                    </button>
+                </div>
+            `;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeModal() { document.getElementById('detailModal').classList.add('hidden'); }
+
+        function shareWhatsAppSection(idx, section) {
+            const item = allData[idx];
+            if (!item) return;
+
+            const profile = JSON.parse(localStorage.getItem('gp_profile')) || { name: "Líder GP", gp: "Grupo Pequeño" };
+            const semana = getVal(item, ['semana'], idx + 1);
+            const fechaDisp = formatDateDisplay(getVal(item, ['fecha']));
+            const titulo = getVal(item, ['titulo']);
+            const textoClave = getVal(item, ['texto_clave', 'textoclave']);
+            const hielo = getVal(item, ['para_romper_el_hielo', 'romperhielo', 'romper_el_hielo', 'para_romper_hielo', 'romper', 'hielo']);
+            const estudiemos = getVal(item, ['estudiemos', 'introduccion']);
+            const conversemos = getVal(item, ['conversemos']);
+            const reflexionemos = getVal(item, ['reflexionemos']);
+            const practiquemos = getVal(item, ['practiquemos']);
+
+            let msg = `✨ *GP "${profile.gp}"* • Líder: ${profile.name}\n`;
+            msg += `📌 *SEMANA ${semana} de 13* (${fechaDisp})\n`;
+            msg += `📖 *Tema:* ${titulo}\n\n`;
+
+            if (section === 'texto') {
+                msg += `📖 *TEXTO CLAVE:*\n_"${textoClave}"_`;
+            } else if (section === 'hielo') {
+                msg += `❄️ *PARA ROMPER EL HIELO:*\n${hielo}`;
+            } else if (section === 'estudiemos') {
+                msg += `🎓 *ESTUDIEMOS:*\n${estudiemos}`;
+            } else if (section === 'conversemos') {
+                msg += `💬 *CONVERSEMOS:*\n${conversemos}\n\n💡 *REFLEXIONEMOS:*\n${reflexionemos}`;
+            } else if (section === 'practiquemos') {
+                msg += `🎯 *PRACTIQUEMOS (DESAFÍO SEMANAL):*\n${practiquemos}`;
+            } else if (section === 'todo') {
+                msg += `📖 *TEXTO CLAVE:*\n_"${textoClave}"_\n\n`;
+                if (hielo) msg += `❄️ *PARA ROMPER EL HIELO:*\n${hielo}\n\n`;
+                if (estudiemos) msg += `🎓 *ESTUDIEMOS:*\n${estudiemos}\n\n`;
+                if (conversemos) msg += `💬 *CONVERSEMOS:*\n${conversemos}\n\n`;
+                if (practiquemos) msg += `🎯 *PRACTIQUEMOS:*\n${practiquemos}\n\n`;
+            }
+
+            msg += `\n¡Te esperamos en nuestro Grupo Pequeño! 🙏✨`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function setTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            renderContent();
+        }
+
+        function switchView(view) {
+            currentView = view;
+            if (view === 'cards') {
+                document.getElementById('view-cards').classList.remove('hidden');
+                document.getElementById('view-table').classList.add('hidden');
+                document.getElementById('btn-view-cards').classList.add('bg-white', 'text-blue-600', 'shadow-sm');
+                document.getElementById('btn-view-table').classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
+            } else {
+                document.getElementById('view-cards').classList.add('hidden');
+                document.getElementById('view-table').classList.remove('hidden');
+                document.getElementById('btn-view-table').classList.add('bg-white', 'text-blue-600', 'shadow-sm');
+                document.getElementById('btn-view-cards').classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
+            }
+            renderContent();
+        }
+
+        function filterThemes() { renderContent(); }
+
+        loadProfile();
+        fetchData();
+    </script>
+</body>
+</html>
